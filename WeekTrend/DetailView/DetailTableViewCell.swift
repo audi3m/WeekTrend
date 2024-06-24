@@ -9,10 +9,6 @@ import UIKit
 
 class DetailTableViewCell: UITableViewCell {
     
-    
-    
-    
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
@@ -26,6 +22,10 @@ class DetailTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+}
+
+// Configure
+extension DetailTableViewCell {
     func configHierarchy() {
         
     }
@@ -37,7 +37,4 @@ class DetailTableViewCell: UITableViewCell {
     func configUI() {
         
     }
-    
-    
-    
 }

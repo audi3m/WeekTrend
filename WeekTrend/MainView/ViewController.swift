@@ -22,44 +22,17 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        
+        configNavBar()
+        
+        view.addSubview(tableView)
+        setTableView()
+        configLayout()
         callRequest()
         
-        setNavBar()
-        setTableView()
-        
-        configHierarchy()
-        configLayout()
-        configUI()
-        
     }
     
-    func setNavBar() {
-        navigationItem.title = "Trend"
-        let listButton = UIBarButtonItem(image: .list, style: .plain, target: self, action: #selector(listButtonClicked))
-        let searchButton = UIBarButtonItem(image: .magnifyingglass, style: .plain, target: self, action: #selector(searchButtonClicked))
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        navigationItem.leftBarButtonItem = listButton
-        navigationItem.rightBarButtonItem = searchButton
-    }
-    
-    
-    
-    func configHierarchy() {
-        view.addSubview(tableView)
-    }
-    
-    func configLayout() {
-        tableView.snp.makeConstraints { make in
-            make.top.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
-            make.bottom.equalToSuperview()
-        }
-    }
-    
-    func configUI() {
-        
-    }
-    
-    func callRequest() {
+    private func callRequest() {
         let url = TrendAPI.url
         AF.request(url, headers: TrendAPI.header).responseDecodable(of: TrendResponse.self) { response in
             switch response.result {
@@ -69,20 +42,35 @@ class ViewController: UIViewController {
                 print(error)
             }
         }
-        
-        
     }
-    
-    @objc func searchButtonClicked() {
-        
-    }
-    
-    @objc func listButtonClicked() {
-        
-    }
-    
 }
 
+// Navigation Bar Buttons
+extension ViewController {
+    @objc func searchButtonClicked() { }
+    @objc func listButtonClicked() { }
+}
+
+// Configure
+extension ViewController {
+    private func configNavBar() {
+        navigationItem.title = "Trend"
+        let listButton = UIBarButtonItem(image: .list, style: .plain, target: self, action: #selector(listButtonClicked))
+        let searchButton = UIBarButtonItem(image: .magnifyingglass, style: .plain, target: self, action: #selector(searchButtonClicked))
+        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.leftBarButtonItem = listButton
+        navigationItem.rightBarButtonItem = searchButton
+    }
+    
+    private func configLayout() {
+        tableView.snp.makeConstraints { make in
+            make.top.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
+            make.bottom.equalToSuperview()
+        }
+    }
+}
+
+// TableView
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -93,21 +81,17 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: TrendTableViewCell.id, for: indexPath) as! TrendTableViewCell
         let data = list[indexPath.row]
         cell.trend = data
-        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let trend = list[indexPath.row]
-        let vc = DetailViewController(movieID: trend.id)
+        let vc = DetailViewController(movieTitle: trend.title, movieID: trend.id)
         navigationController?.pushViewController(vc, animated: true)
-        
-        
         tableView.reloadRows(at: [indexPath], with: .automatic)
     }
     
-    
-    func setTableView() {
+    private func setTableView() {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(TrendTableViewCell.self, forCellReuseIdentifier: TrendTableViewCell.id)

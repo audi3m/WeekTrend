@@ -24,11 +24,9 @@ class TrendTableViewCell: UITableViewCell {
     
     var trend: Trend? {
         didSet {
-            configData()
-            getCast()
+            configData() 
         }
     }
-     
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -43,7 +41,7 @@ class TrendTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configHierarchy() {
+    private func configHierarchy() {
         contentView.addSubview(dateLabel)
         contentView.addSubview(genreLabel)
         contentView.addSubview(cellBackgroundView)
@@ -54,7 +52,7 @@ class TrendTableViewCell: UITableViewCell {
         cellBackgroundView.addSubview(castLabel)
     }
     
-    func configLayout() {
+    private func configLayout() {
         dateLabel.snp.makeConstraints { make in
             make.top.equalTo(contentView).offset(15)
             make.leading.equalTo(cellBackgroundView.snp.leading)
@@ -103,7 +101,7 @@ class TrendTableViewCell: UITableViewCell {
         
     }
     
-    func configUI() {
+    private func configUI() {
         
         dateLabel.font = .systemFont(ofSize: 13)
         dateLabel.textColor = .gray
@@ -134,7 +132,7 @@ class TrendTableViewCell: UITableViewCell {
         
     }
     
-    func configData() {
+    private func configData() {
         guard let trend else { return }
         
         dateLabel.text = trend.release_date
@@ -142,10 +140,12 @@ class TrendTableViewCell: UITableViewCell {
         trendImageView.kf.setImage(with: URL(string: trend.posterUrl))
         titleLabel.text = trend.title
         gradeLabel.text = "\(trend.vote_average.gradeFormat())"
-        castLabel.text = ""
+        
+        getCast()
+        
     }
     
-    func getCast() {
+    private func getCast() {
         guard let trend else { return }
         let url = trend.castUrl
         AF.request(url, headers: TrendAPI.header).responseDecodable(of: CastResponse.self) { response in

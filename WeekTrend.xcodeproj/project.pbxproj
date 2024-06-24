@@ -83,10 +83,10 @@
 			children = (
 				D466A25A2C170C8700AA2954 /* AppDelegate.swift */,
 				D466A25C2C170C8700AA2954 /* SceneDelegate.swift */,
-				D466A28A2C175F6500AA2954 /* MainView */,
-				D466A28B2C175F7700AA2954 /* DetailView */,
 				D466A2792C170D7200AA2954 /* APIKey.swift */,
 				D466A2802C170FA000AA2954 /* Trend.swift */,
+				D466A28A2C175F6500AA2954 /* MainView */,
+				D466A28B2C175F7700AA2954 /* DetailView */,
 				D466A27D2C170E2D00AA2954 /* Extensions */,
 				D466A2632C170C8900AA2954 /* Assets.xcassets */,
 				D466A2652C170C8900AA2954 /* LaunchScreen.storyboard */,
