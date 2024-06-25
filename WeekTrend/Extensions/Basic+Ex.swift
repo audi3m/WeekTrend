@@ -13,6 +13,12 @@ extension UITableViewCell {
     }
 }
 
+extension UICollectionViewCell {
+    static var id: String {
+        String(describing: self)
+    }
+}
+
 extension UIViewController {
     static var id: String {
         String(describing: self)

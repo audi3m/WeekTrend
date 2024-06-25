@@ -6,35 +6,49 @@
 //
 
 import UIKit
+import SnapKit
 
-class DetailTableViewCell: UITableViewCell {
+class DetailTableViewCell: BaseTableViewCell {
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    let titleLabel = {
+        let view = UILabel()
+        view.font = .boldSystemFont(ofSize: 20)
+        view.text = "비슷한 영화"
+        return view
+    }()
+    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout())
+    
+    static func layout() -> UICollectionViewLayout {
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = 10
+        layout.minimumInteritemSpacing = 0
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        layout.scrollDirection = .horizontal
+        layout.itemSize = CGSize(width: 130, height: 160)
+        return layout
+    }
+    
+    override func setHierarchy() {
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(collectionView)
+    }
+    
+    override func setLayout() {
+        titleLabel.snp.makeConstraints { make in
+            make.top.horizontalEdges.equalTo(contentView).inset(15)
+            make.height.equalTo(20)
+        }
         
-        configHierarchy()
-        configLayout()
-        configUI()
+        collectionView.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(10)
+            make.horizontalEdges.bottom.equalTo(contentView)
+        }
         
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-}
-
-// Configure
-extension DetailTableViewCell {
-    func configHierarchy() {
+    override func setView() {
+        
         
     }
     
-    func configLayout() {
-        
-    }
-    
-    func configUI() {
-        
-    }
 }
