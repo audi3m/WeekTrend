@@ -23,7 +23,7 @@ class TrendTableViewCell: BaseTableViewCell {
     
     var trend: Trend? {
         didSet {
-            configData() 
+            configData()
         }
     }
     
@@ -132,18 +132,23 @@ class TrendTableViewCell: BaseTableViewCell {
         titleLabel.text = trend.title
         gradeLabel.text = "\(trend.vote_average.gradeFormat())"
         
-        getCast()
+        getCast() { casts in
+            DispatchQueue.main.async {
+                self.castLabel.text = casts.joined(separator: ", ")
+                print(casts)
+            }
+        }
         
     }
     
-    private func getCast() {
+    private func getCast(completionHandler: @escaping ([String]) -> Void) {
         guard let trend else { return }
-        let url = trend.castUrl
+        let url = URL(string: trend.castUrl)!
         AF.request(url, headers: TrendAPI.header).responseDecodable(of: CastResponse.self) { response in
             switch response.result {
             case .success(let value):
                 let list = Array(value.cast.prefix(5)).map { $0.name }
-                self.castLabel.text = list.joined(separator: ", ")
+                completionHandler(list)
             case .failure(let error):
                 print(error)
             }

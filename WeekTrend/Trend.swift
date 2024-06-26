@@ -50,7 +50,11 @@ struct Trend: Decodable {
     }
     
     var posterUrl: String {
-        "\(TrendAPI.posterUrl)\(poster_path ?? "")"
+        if let poster_path {
+            return "\(TrendAPI.posterUrl)\(poster_path)"
+        } else {
+            return ""
+        }
     }
     
     var castUrl: String {

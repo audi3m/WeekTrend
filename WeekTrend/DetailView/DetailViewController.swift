@@ -56,7 +56,7 @@ class DetailViewController: UIViewController {
                     print(error)
                 } else {
                     guard let data else { return }
-                    self.list[0] = data.map { $0.poster_path == nil ? "" : TrendAPI.posterUrl + ($0.poster_path ?? "") }
+                    self.list[0] = data.map { $0.posterUrl }
                 }
                 group.leave()
             }
@@ -69,7 +69,7 @@ class DetailViewController: UIViewController {
                     print(error)
                 } else {
                     guard let data else { return }
-                    self.list[1] = data.map { $0.poster_path == nil ? "" : TrendAPI.posterUrl + ($0.poster_path ?? "") }
+                    self.list[1] = data.map { $0.posterUrl }
                 }
                 group.leave()
             }

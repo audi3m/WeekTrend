@@ -13,7 +13,7 @@ enum TrendRequest {
     case trendingMovie
     case cast(id: Int)
     case similar(id: Int)
-    case recommend(id: Int)
+    case recommend(id: Int) 
     
     var baseUrl: String {
         return "https://api.themoviedb.org/3/"
