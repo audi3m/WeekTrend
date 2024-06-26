@@ -13,28 +13,19 @@ class TrendApi {
     
     private init() { }
     
-    func getSimilarMovies(movieID: Int, completionHandler: @escaping ([String]) -> Void) {
-        let url = TrendAPI.similarUrl + "\(movieID)" + "/similar"
-        AF.request(url, headers: TrendAPI.header).responseDecodable(of: TrendResponse.self) { response in
-            switch response.result {
-            case .success(let value):
-                let list = value.results.map { TrendAPI.posterUrl + $0.poster_path }
-                completionHandler(list)
-            case .failure(let error):
-                print(error)
-            }
-        }
-    }
+    typealias CompletionHandler = ([Trend]?, Error?) -> Void
     
-    func getRecommendMovies(movieID: Int, completionHandler: @escaping ([String]) -> Void) {
-        let url = TrendAPI.similarUrl + "\(movieID)" + "/recommendations"
-        AF.request(url, headers: TrendAPI.header).responseDecodable(of: TrendResponse.self) { response in
+    func tmdbRequest(api: TrendRequest, completionHandler: @escaping CompletionHandler) {
+        AF.request(api.endPoint,
+                   method: api.method,
+                   parameters: api.parameters,
+                   encoding: URLEncoding(destination: .queryString),
+                   headers: api.header).responseDecodable(of: TrendResponse.self) { response in
             switch response.result {
             case .success(let value):
-                let list = value.results.map { TrendAPI.posterUrl + $0.poster_path }
-                completionHandler(list)
+                completionHandler(value.results, nil)
             case .failure(let error):
-                print(error)
+                completionHandler(nil, error)
             }
         }
     }

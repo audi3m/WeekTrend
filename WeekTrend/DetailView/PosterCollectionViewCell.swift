@@ -8,28 +8,30 @@
 import UIKit
 import SnapKit
 
-class PosterCollectionViewCell: UICollectionViewCell {
+class PosterCollectionViewCell: BaseCollectionViewCell {
     
     let posterImageView = UIImageView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+    }
+    
+    override func setHierarchy() {
         contentView.addSubview(posterImageView)
-        
+    }
+    
+    override func setLayout() {
         posterImageView.snp.makeConstraints { make in
             make.edges.equalTo(contentView)
         }
-        
+    }
+    
+    override func setUI() {
         posterImageView.backgroundColor = .lightGray
         posterImageView.contentMode = .scaleAspectFill
         posterImageView.layer.cornerRadius = 10
         posterImageView.clipsToBounds = true
-        
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
 }

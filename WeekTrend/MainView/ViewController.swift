@@ -28,18 +28,18 @@ class ViewController: UIViewController {
         view.addSubview(tableView)
         setTableView()
         configLayout()
+        
         callRequest()
         
     }
     
     private func callRequest() {
-        let url = TrendAPI.url
-        AF.request(url, headers: TrendAPI.header).responseDecodable(of: TrendResponse.self) { response in
-            switch response.result {
-            case .success(let value):
-                self.list = value.results
-            case .failure(let error):
+        TrendApi.shared.tmdbRequest(api: .trendingMovie) { (data, error) in
+            if let error {
                 print(error)
+            } else {
+                guard let data else { return }
+                self.list = data
             }
         }
     }

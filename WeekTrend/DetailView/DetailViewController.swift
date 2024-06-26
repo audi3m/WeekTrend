@@ -51,16 +51,26 @@ class DetailViewController: UIViewController {
         
         group.enter()
         DispatchQueue.global().async(group: group) {
-            TrendApi.shared.getSimilarMovies(movieID: self.movieID) { list in
-                self.list[0] = list
+            TrendApi.shared.tmdbRequest(api: .similar(id: self.movieID)) { (data, error) in
+                if let error {
+                    print(error)
+                } else {
+                    guard let data else { return }
+                    self.list[0] = data.map { TrendAPI.posterUrl + $0.poster_path }
+                }
                 group.leave()
             }
         }
         
         group.enter()
         DispatchQueue.global().async(group: group) {
-            TrendApi.shared.getRecommendMovies(movieID: self.movieID) { list in
-                self.list[1] = list
+            TrendApi.shared.tmdbRequest(api: .recommend(id: self.movieID)) { (data, error) in
+                if let error {
+                    print(error)
+                } else {
+                    guard let data else { return }
+                    self.list[1] = data.map { TrendAPI.posterUrl + $0.poster_path }
+                }
                 group.leave()
             }
         }

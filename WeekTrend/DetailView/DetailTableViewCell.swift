@@ -22,9 +22,9 @@ class DetailTableViewCell: BaseTableViewCell {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 10
         layout.minimumInteritemSpacing = 0
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 130, height: 160)
+        layout.itemSize = CGSize(width: 120, height: 160)
         return layout
     }
     
@@ -46,8 +46,7 @@ class DetailTableViewCell: BaseTableViewCell {
         
     }
     
-    override func setView() {
-        
+    override func setUI() {
         
     }
     

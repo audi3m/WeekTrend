@@ -10,8 +10,7 @@ import Alamofire
 import Kingfisher
 import SnapKit
 
-
-class TrendTableViewCell: UITableViewCell {
+class TrendTableViewCell: BaseTableViewCell {
     
     let dateLabel = UILabel()
     let genreLabel = UILabel()
@@ -31,17 +30,9 @@ class TrendTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        configHierarchy()
-        configLayout()
-        configUI()
-        
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func configHierarchy() {
+    override func setHierarchy() {
         contentView.addSubview(dateLabel)
         contentView.addSubview(genreLabel)
         contentView.addSubview(cellBackgroundView)
@@ -52,7 +43,7 @@ class TrendTableViewCell: UITableViewCell {
         cellBackgroundView.addSubview(castLabel)
     }
     
-    private func configLayout() {
+    override func setLayout() {
         dateLabel.snp.makeConstraints { make in
             make.top.equalTo(contentView).offset(15)
             make.leading.equalTo(cellBackgroundView.snp.leading)
@@ -101,7 +92,7 @@ class TrendTableViewCell: UITableViewCell {
         
     }
     
-    private func configUI() {
+    override func setUI() {
         
         dateLabel.font = .systemFont(ofSize: 13)
         dateLabel.textColor = .gray
@@ -158,6 +149,5 @@ class TrendTableViewCell: UITableViewCell {
             }
         }
     }
-    
     
 }
