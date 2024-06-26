@@ -89,6 +89,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         let vc = DetailViewController(movieTitle: trend.title, movieID: trend.id)
         navigationController?.pushViewController(vc, animated: true)
         tableView.reloadRows(at: [indexPath], with: .automatic)
+        print("\(trend.id)")
     }
     
     private func setTableView() {

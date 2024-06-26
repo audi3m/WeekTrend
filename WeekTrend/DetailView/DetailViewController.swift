@@ -56,7 +56,7 @@ class DetailViewController: UIViewController {
                     print(error)
                 } else {
                     guard let data else { return }
-                    self.list[0] = data.map { TrendAPI.posterUrl + $0.poster_path }
+                    self.list[0] = data.map { $0.poster_path == nil ? "" : TrendAPI.posterUrl + ($0.poster_path ?? "") }
                 }
                 group.leave()
             }
@@ -69,7 +69,7 @@ class DetailViewController: UIViewController {
                     print(error)
                 } else {
                     guard let data else { return }
-                    self.list[1] = data.map { TrendAPI.posterUrl + $0.poster_path }
+                    self.list[1] = data.map { $0.poster_path == nil ? "" : TrendAPI.posterUrl + ($0.poster_path ?? "") }
                 }
                 group.leave()
             }
@@ -109,7 +109,11 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PosterCollectionViewCell.id, for: indexPath) as! PosterCollectionViewCell
         let data = list[collectionView.tag][indexPath.item]
-        cell.posterImageView.kf.setImage(with: URL(string: data)!)
+        if !data.isEmpty {
+            cell.posterImageView.kf.setImage(with: URL(string: data)!)
+        } else {
+            cell.posterImageView.image = UIImage(systemName: "movieclapper")
+        }
         return cell
     }
     

@@ -42,7 +42,7 @@ struct Trend: Decodable {
     let release_date: String
     let vote_average: Double
     let genre_ids: [Int]
-    let poster_path: String
+    let poster_path: String?
     
     var genre: String {
         let id = self.genre_ids.first ?? 0
@@ -50,7 +50,7 @@ struct Trend: Decodable {
     }
     
     var posterUrl: String {
-        "\(TrendAPI.posterUrl)\(poster_path)"
+        "\(TrendAPI.posterUrl)\(poster_path ?? "")"
     }
     
     var castUrl: String {
