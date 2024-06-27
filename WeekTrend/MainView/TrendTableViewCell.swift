@@ -58,7 +58,7 @@ class TrendTableViewCell: BaseTableViewCell {
             make.top.equalTo(genreLabel.snp.bottom).offset(10)
             make.centerX.equalTo(contentView.snp.centerX)
             make.width.equalTo(contentView.snp.width).multipliedBy(0.9)
-            make.bottom.equalTo(contentView.snp.bottom).offset(-30)
+            make.bottom.equalTo(contentView.snp.bottom).offset(-20)
         }
         
         trendImageView.snp.makeConstraints { make in
@@ -70,7 +70,6 @@ class TrendTableViewCell: BaseTableViewCell {
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(trendImageView.snp.bottom).offset(15)
             make.horizontalEdges.equalTo(cellBackgroundView).inset(20)
-            
         }
         
         vudwjaLabel.snp.makeConstraints { make in
@@ -89,7 +88,6 @@ class TrendTableViewCell: BaseTableViewCell {
             make.horizontalEdges.equalTo(cellBackgroundView.snp.horizontalEdges).inset(20)
             make.bottom.equalTo(cellBackgroundView.snp.bottom).offset(-20)
         }
-        
     }
     
     override func setUI() {
@@ -113,46 +111,46 @@ class TrendTableViewCell: BaseTableViewCell {
         vudwjaLabel.text = "평점"
         vudwjaLabel.font = .boldSystemFont(ofSize: 13)
         vudwjaLabel.textColor = .white
+        vudwjaLabel.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
+        vudwjaLabel.layer.cornerRadius = 5
+        vudwjaLabel.clipsToBounds = true
         
         gradeLabel.backgroundColor = .white
         gradeLabel.font = .boldSystemFont(ofSize: 13)
         gradeLabel.textColor = .black
+        gradeLabel.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner]
+        gradeLabel.layer.cornerRadius = 5
+        gradeLabel.clipsToBounds = true
         
         castLabel.font = .systemFont(ofSize: 13)
         castLabel.textColor = .darkGray
-        
     }
     
     private func configData() {
         guard let trend else { return }
-        
         dateLabel.text = trend.release_date
         genreLabel.text = "#" + trend.genre
         trendImageView.kf.setImage(with: URL(string: trend.posterUrl))
         titleLabel.text = trend.title
         gradeLabel.text = "\(trend.vote_average.gradeFormat())"
         
-        getCast() { casts in
-            DispatchQueue.main.async {
-                self.castLabel.text = casts.joined(separator: ", ")
-                print(casts)
-            }
-        }
-        
+//        getCast { casts in
+//            self.castLabel.text = casts.joined(separator: ", ")
+//        }
     }
     
-    private func getCast(completionHandler: @escaping ([String]) -> Void) {
-        guard let trend else { return }
-        let url = URL(string: trend.castUrl)!
-        AF.request(url, headers: TrendAPI.header).responseDecodable(of: CastResponse.self) { response in
-            switch response.result {
-            case .success(let value):
-                let list = Array(value.cast.prefix(5)).map { $0.name }
-                completionHandler(list)
-            case .failure(let error):
-                print(error)
-            }
-        }
-    }
+//    private func getCast( completionHandler: @escaping ([String]) -> Void) {
+//        guard let trend else { return }
+//        let url = URL(string: trend.castUrl)!
+//        AF.request(url, headers: TrendAPI.header).responseDecodable(of: CastResponse.self) { response in
+//            switch response.result {
+//            case .success(let value):
+//                let list = Array(value.cast.prefix(10)).map { $0.name }
+//                completionHandler(list)
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
+//    }
     
 }

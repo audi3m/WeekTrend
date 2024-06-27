@@ -78,9 +78,7 @@ class DetailViewController: UIViewController {
         group.notify(queue: .main) {
             self.tableView.reloadData()
         }
-        
     }
-    
 }
 
 extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
@@ -112,7 +110,7 @@ extension DetailViewController: UICollectionViewDelegate, UICollectionViewDataSo
         if !data.isEmpty {
             cell.posterImageView.kf.setImage(with: URL(string: data)!)
         } else {
-            cell.posterImageView.image = UIImage(systemName: "movieclapper")
+            cell.posterImageView.image = .movieclapper
         }
         return cell
     }

@@ -22,15 +22,11 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        
         configNavBar()
-        
         view.addSubview(tableView)
         setTableView()
         configLayout()
-        
         callRequest()
-        
     }
     
     private func callRequest() {
@@ -43,6 +39,7 @@ class ViewController: UIViewController {
             }
         }
     }
+    
 }
 
 // Navigation Bar Buttons
@@ -68,6 +65,7 @@ extension ViewController {
             make.bottom.equalToSuperview()
         }
     }
+    
 }
 
 // TableView
@@ -79,8 +77,13 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: TrendTableViewCell.id, for: indexPath) as! TrendTableViewCell
-        let data = list[indexPath.row]
-        cell.trend = data
+        let trend = list[indexPath.row]
+        cell.trend = trend
+        getCast(trend: trend) { casts in
+            DispatchQueue.main.async {
+                cell.castLabel.text = casts.joined(separator: ", ")
+            }
+        }
         return cell
     }
     
@@ -97,6 +100,19 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         tableView.dataSource = self
         tableView.register(TrendTableViewCell.self, forCellReuseIdentifier: TrendTableViewCell.id)
         tableView.separatorStyle = .none
+    }
+    
+    private func getCast(trend: Trend, completionHandler: @escaping ([String]) -> Void) {
+        let url = URL(string: trend.castUrl)!
+        AF.request(url, headers: TrendAPI.header).responseDecodable(of: CastResponse.self) { response in
+            switch response.result {
+            case .success(let value):
+                let list = Array(value.cast.prefix(10)).map { $0.name }
+                completionHandler(list)
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
     
 }

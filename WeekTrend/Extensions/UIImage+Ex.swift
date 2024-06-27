@@ -10,4 +10,5 @@ import UIKit
 extension UIImage {
     static let magnifyingglass = UIImage(systemName: "magnifyingglass")
     static let list = UIImage(systemName: "list.triangle")
+    static let movieclapper = UIImage(systemName: "movieclapper")
 }
