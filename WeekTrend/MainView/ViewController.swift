@@ -30,14 +30,28 @@ class ViewController: UIViewController {
     }
     
     private func callRequest() {
-        TrendApi.shared.tmdbRequest(api: .trendingMovie) { (data, error) in
+        let url = TrendRequest.trendingMovie.endPoint
+        var request = URLRequest(url: url)
+        request.setValue(TrendAPI.key, forHTTPHeaderField: "Authorization")
+        URLSession.request(endPoint: request) { (data: TrendResponse?, error: APIError?) in
             if let error {
-                print(error)
-            } else {
-                guard let data else { return }
-                self.list = data
+                print("Error code: \(error.rawValue)")
+                return
+            }
+            
+            if let data {
+                self.list = data.results
             }
         }
+        
+//        TrendApi.shared.tmdbRequest(api: .trendingMovie) { (data, error) in
+//            if let error {
+//                print(error)
+//            } else {
+//                guard let data else { return }
+//                self.list = data
+//            }
+//        }
     }
     
 }

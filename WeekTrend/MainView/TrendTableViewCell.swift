@@ -137,6 +137,7 @@ class TrendTableViewCell: BaseTableViewCell {
 //        getCast { casts in
 //            self.castLabel.text = casts.joined(separator: ", ")
 //        }
+        
     }
     
 //    private func getCast( completionHandler: @escaping ([String]) -> Void) {
