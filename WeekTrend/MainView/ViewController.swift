@@ -9,15 +9,16 @@ import UIKit
 import Alamofire
 import SnapKit
 
+struct URLRequestWithKey {
+    
+}
+
 class ViewController: UIViewController {
     
     let tableView = UITableView()
+    let group = DispatchGroup()
     
-    var list: [Trend] = [] {
-        didSet {
-            tableView.reloadData()
-        }
-    }
+    var list: [Trend] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,33 +28,57 @@ class ViewController: UIViewController {
         setTableView()
         configLayout()
         callRequest()
+        
+        group.notify(queue: .main) {
+            self.tableView.reloadData()
+            print("======== 끝 ========")
+        }
     }
+    
+    
     
     private func callRequest() {
         let url = TrendRequest.trendingMovie.endPoint
         var request = URLRequest(url: url)
         request.setValue(TrendAPI.key, forHTTPHeaderField: "Authorization")
+        
+        group.enter()
         URLSession.request(endPoint: request) { (data: TrendResponse?, error: APIError?) in
             if let error {
                 print("Error code: \(error.rawValue)")
+                self.group.leave()
                 return
             }
             
             if let data {
                 self.list = data.results
             }
+            self.group.leave()
         }
         
-//        TrendApi.shared.tmdbRequest(api: .trendingMovie) { (data, error) in
-//            if let error {
-//                print(error)
-//            } else {
-//                guard let data else { return }
-//                self.list = data
-//            }
-//        }
     }
     
+    private func callCasts(trend: Trend, cell: TrendTableViewCell, completion: @escaping (String) -> Void) {
+        let url = URL(string: trend.castUrl)!
+        print(trend.castUrl)
+        var request = URLRequest(url: url)
+        request.setValue(TrendAPI.key, forHTTPHeaderField: "Authorization")
+        
+        group.enter()
+        URLSession.request(endPoint: request) { (data: CastResponse?, error: APIError?) in
+            if let error {
+                print("Error code: \(error.rawValue)")
+                self.group.leave()
+                return
+            }
+            
+            if let data {
+                let list = Array(data.cast.prefix(10)).map { $0.name }
+                let casts = list.joined(separator: ", ")
+                completion(casts)
+            }
+        }
+    }
 }
 
 // Navigation Bar Buttons
@@ -65,7 +90,7 @@ extension ViewController {
 // Configure
 extension ViewController {
     private func configNavBar() {
-        navigationItem.title = "Trend"
+        navigationItem.title = "이번 주 영화"
         let listButton = UIBarButtonItem(image: .list, style: .plain, target: self, action: #selector(listButtonClicked))
         let searchButton = UIBarButtonItem(image: .magnifyingglass, style: .plain, target: self, action: #selector(searchButtonClicked))
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
@@ -93,11 +118,19 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: TrendTableViewCell.id, for: indexPath) as! TrendTableViewCell
         let trend = list[indexPath.row]
         cell.trend = trend
-        getCast(trend: trend) { casts in
+        callCasts(trend: trend, cell: cell) { casts in
             DispatchQueue.main.async {
-                cell.castLabel.text = casts.joined(separator: ", ")
+                cell.castLabel.text = casts
+                self.group.leave()
             }
         }
+        
+//        getCast(trend: trend) { casts in
+//            DispatchQueue.main.async {
+//                cell.castLabel.text = casts.joined(separator: ", ")
+//            }
+//        }
+        
         return cell
     }
     
@@ -116,17 +149,17 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         tableView.separatorStyle = .none
     }
     
-    private func getCast(trend: Trend, completionHandler: @escaping ([String]) -> Void) {
-        let url = URL(string: trend.castUrl)!
-        AF.request(url, headers: TrendAPI.header).responseDecodable(of: CastResponse.self) { response in
-            switch response.result {
-            case .success(let value):
-                let list = Array(value.cast.prefix(10)).map { $0.name }
-                completionHandler(list)
-            case .failure(let error):
-                print(error)
-            }
-        }
-    }
+//    private func getCast(trend: Trend, completionHandler: @escaping ([String]) -> Void) {
+//        let url = URL(string: trend.castUrl)!
+//        AF.request(url, headers: TrendAPI.header).responseDecodable(of: CastResponse.self) { response in
+//            switch response.result {
+//            case .success(let value):
+//                let list = Array(value.cast.prefix(10)).map { $0.name }
+//                completionHandler(list)
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
+//    }
     
 }
