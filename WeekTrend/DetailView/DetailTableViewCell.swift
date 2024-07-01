@@ -7,6 +7,11 @@
 
 import UIKit
 import SnapKit
+//import WebKit
+//
+//class WebViewCell: BaseTableViewCell {
+//    
+//}
 
 class DetailTableViewCell: BaseTableViewCell {
     

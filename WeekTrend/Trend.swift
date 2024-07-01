@@ -8,8 +8,8 @@
 import Foundation
 import Alamofire
 
-class TrendApi {
-    static let shared = TrendApi()
+class TrendService {
+    static let shared = TrendService()
     
     private init() { }
     
@@ -29,6 +29,67 @@ class TrendApi {
             }
         }
     }
+    
+    func request<T: Decodable>(api: TrendRequest, model: T.Type, completionHandler: @escaping (T?, ResponseError?) -> Void) {
+         
+        var request = URLRequest(url: api.endPoint, timeoutInterval: 10)
+        request.setValue(TrendAPI.key, forHTTPHeaderField: "Authorization")
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            
+            DispatchQueue.main.async {
+                guard error == nil else {
+                    print("Failed Request")
+                    completionHandler(nil, .failedRequest)
+                    return
+                }
+                
+                guard let data else {
+                    print("No Data Returned")
+                    completionHandler(nil, .noData)
+                    return
+                }
+                
+                guard let response = response as? HTTPURLResponse else {
+                    print("Unable Response")
+                    completionHandler(nil, .invalidResponse)
+                    return
+                }
+                
+                guard response.statusCode == 200 else {
+                    print("Failed Response")
+                    completionHandler(nil, .failedRequest)
+                    return
+                }
+                
+                do {
+                    let result = try JSONDecoder().decode(T.self, from: data)
+                    completionHandler(result, nil)
+                    print("Success")
+                } catch {
+                    print("Error")
+                    completionHandler(nil, .invalidData)
+                }
+            }
+        }.resume()
+        
+    }
+    
+    enum ResponseError: Int, Error {
+        case failedRequest = 401
+        case noData = 403
+        case invalidResponse // 404
+        case invalidData // 405
+    }
+}
+
+struct VideoResponse: Decodable {
+    let results: [VideoInfo]
+}
+
+struct VideoInfo: Decodable {
+    let key: String
+    let site: String
 }
 
 struct TrendResponse: Decodable {

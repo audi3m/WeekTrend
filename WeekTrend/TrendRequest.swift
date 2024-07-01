@@ -12,6 +12,7 @@ enum TrendRequest {
     
     case trendingMovie
     case cast(id: Int)
+    case video(id: Int)
     case similar(id: Int)
     case recommend(id: Int) 
     
@@ -25,6 +26,8 @@ enum TrendRequest {
             return URL(string: baseUrl + "trending/movie/week")!
         case .cast(let id):
             return URL(string: baseUrl + "movie/\(id)/credits")!
+        case .video(let id):
+            return URL(string: baseUrl + "movie/\(id)/videos")!
         case .similar(let id):
             return URL(string: baseUrl + "movie/\(id)/similar")!
         case .recommend(let id):

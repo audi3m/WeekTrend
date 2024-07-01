@@ -9,10 +9,6 @@ import UIKit
 import Alamofire
 import SnapKit
 
-struct URLRequestWithKey {
-    
-}
-
 class ViewController: UIViewController {
     
     let tableView = UITableView()
@@ -31,36 +27,25 @@ class ViewController: UIViewController {
         
         group.notify(queue: .main) {
             self.tableView.reloadData()
-            print("======== 끝 ========")
         }
     }
     
-    
-    
     private func callRequest() {
-        let url = TrendRequest.trendingMovie.endPoint
-        var request = URLRequest(url: url)
-        request.setValue(TrendAPI.key, forHTTPHeaderField: "Authorization")
-        
         group.enter()
-        URLSession.request(endPoint: request) { (data: TrendResponse?, error: APIError?) in
+        TrendService.shared.request(api: .trendingMovie, model: TrendResponse.self) { data, error in
             if let error {
                 print("Error code: \(error.rawValue)")
                 self.group.leave()
                 return
             }
             
-            if let data {
-                self.list = data.results
-            }
+            if let data { self.list = data.results }
             self.group.leave()
         }
-        
     }
     
     private func callCasts(trend: Trend, cell: TrendTableViewCell, completion: @escaping (String) -> Void) {
         let url = URL(string: trend.castUrl)!
-        print(trend.castUrl)
         var request = URLRequest(url: url)
         request.setValue(TrendAPI.key, forHTTPHeaderField: "Authorization")
         
@@ -75,10 +60,13 @@ class ViewController: UIViewController {
             if let data {
                 let list = Array(data.cast.prefix(10)).map { $0.name }
                 let casts = list.joined(separator: ", ")
-                completion(casts)
+                DispatchQueue.main.async {
+                    completion(casts)
+                }
             }
         }
     }
+    
 }
 
 // Navigation Bar Buttons
@@ -119,17 +107,9 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         let trend = list[indexPath.row]
         cell.trend = trend
         callCasts(trend: trend, cell: cell) { casts in
-            DispatchQueue.main.async {
-                cell.castLabel.text = casts
-                self.group.leave()
-            }
+            cell.castLabel.text = casts
+            self.group.leave()
         }
-        
-//        getCast(trend: trend) { casts in
-//            DispatchQueue.main.async {
-//                cell.castLabel.text = casts.joined(separator: ", ")
-//            }
-//        }
         
         return cell
     }

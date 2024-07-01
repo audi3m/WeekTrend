@@ -9,9 +9,12 @@ import UIKit
 import Alamofire
 import Kingfisher
 import SnapKit
+import WebKit
 
 class DetailViewController: UIViewController {
     
+    let webView = WKWebView()
+    private let loading = UIActivityIndicatorView()
     var movieTitle: String
     var movieID: Int
     
@@ -46,33 +49,61 @@ class DetailViewController: UIViewController {
         configUI()
         
         setData()
+        callVideoLink()
+        callSimilarAndRecommend()
         
+    }
+    
+    func callVideoLink() {
+        TrendService.shared.request(api: .video(id: self.movieID), model: VideoResponse.self) { data, error in
+            if let error {
+                print(error)
+            } else {
+                guard let data = data?.results else { return }
+                if let key = data.first?.key,
+                   let url = URL(string: "https://www.youtube.com/watch?v=" + key) {
+                    
+                    let embedHTML = """
+                            <!DOCTYPE html>
+                            <html>
+                            <body style="margin: 0;">
+                            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/\(key)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </body>
+                            </html>
+                            """
+                    self.webView.loadHTMLString(embedHTML, baseURL: nil)
+                    
+//                    let request = URLRequest(url: url)
+//                    self.webView.load(request)
+                    
+                }
+            }
+        }
+    }
+    
+    func callSimilarAndRecommend() {
         let group = DispatchGroup()
         
         group.enter()
-        DispatchQueue.global().async(group: group) {
-            TrendApi.shared.tmdbRequest(api: .similar(id: self.movieID)) { (data, error) in
-                if let error {
-                    print(error)
-                } else {
-                    guard let data else { return }
-                    self.list[0] = data.map { $0.posterUrl }
-                }
-                group.leave()
+        TrendService.shared.request(api: .similar(id: self.movieID), model: TrendResponse.self) { data, error in
+            if let error {
+                print(error)
+            } else {
+                guard let data = data?.results else { return }
+                self.list[0] = data.map { $0.posterUrl }
             }
+            group.leave()
         }
         
         group.enter()
-        DispatchQueue.global().async(group: group) {
-            TrendApi.shared.tmdbRequest(api: .recommend(id: self.movieID)) { (data, error) in
-                if let error {
-                    print(error)
-                } else {
-                    guard let data else { return }
-                    self.list[1] = data.map { $0.posterUrl }
-                }
-                group.leave()
+        TrendService.shared.request(api: .recommend(id: self.movieID), model: TrendResponse.self) { data, error in
+            if let error {
+                print(error)
+            } else {
+                guard let data = data?.results else { return }
+                self.list[1] = data.map { $0.posterUrl }
             }
+            group.leave()
         }
         
         group.notify(queue: .main) {
@@ -125,21 +156,56 @@ extension DetailViewController {
     }
     
     func configHierarchy() {
+        view.addSubview(webView)
+        webView.addSubview(loading)
         view.addSubview(tableView)
     }
     
     func configLayout() {
+        webView.snp.makeConstraints { make in
+            make.top.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
+            make.height.equalTo(300)
+        }
+        
+        loading.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
         tableView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(webView.snp.bottom)
+            make.bottom.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
         }
     }
     
     func configUI() {
+        webView.backgroundColor = .lightGray
+        
         tableView.separatorStyle = .none
+        
+        loading.style = .medium
+        loading.hidesWhenStopped = true
     }
     
     func setData() {
         
     }
     
+}
+
+extension DetailViewController: WKNavigationDelegate {
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        loading.startAnimating()
+    }
+    
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        loading.stopAnimating()
+    }
+    
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        loading.stopAnimating()
+    }
+    
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        loading.stopAnimating()
+    }
 }
