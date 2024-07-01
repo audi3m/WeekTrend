@@ -61,20 +61,10 @@ class DetailViewController: UIViewController {
             } else {
                 guard let data = data?.results else { return }
                 if let key = data.first?.key,
-                   let url = URL(string: "https://www.youtube.com/watch?v=" + key) {
-                    
-                    let embedHTML = """
-                            <!DOCTYPE html>
-                            <html>
-                            <body style="margin: 0;">
-                            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/\(key)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                            </body>
-                            </html>
-                            """
-                    self.webView.loadHTMLString(embedHTML, baseURL: nil)
-                    
-//                    let request = URLRequest(url: url)
-//                    self.webView.load(request)
+                   let url = URL(string: "https://www.youtube.com/embed/" + key) {
+//                   let url = URL(string: "https://www.youtube.com/watch?v=" + key) {
+                    let request = URLRequest(url: url)
+                    self.webView.load(request)
                     
                 }
             }
