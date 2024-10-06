@@ -8,9 +8,8 @@
 import Foundation
 import Alamofire
 
-class TrendService {
-    static let shared = TrendService()
-    
+final class TrendService {
+    static let shared = TrendService() 
     private init() { }
     
     typealias CompletionHandler = ([Trend]?, Error?) -> Void

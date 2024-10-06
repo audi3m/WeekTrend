@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D41AC45A2C3381C5002A0D34 /* VideoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41AC4592C3381C5002A0D34 /* VideoTableViewCell.swift */; };
 		D466A25B2C170C8700AA2954 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D466A25A2C170C8700AA2954 /* AppDelegate.swift */; };
 		D466A25D2C170C8700AA2954 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D466A25C2C170C8700AA2954 /* SceneDelegate.swift */; };
 		D466A25F2C170C8700AA2954 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D466A25E2C170C8700AA2954 /* ViewController.swift */; };
@@ -33,6 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D41AC4592C3381C5002A0D34 /* VideoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoTableViewCell.swift; sourceTree = "<group>"; };
 		D466A2572C170C8700AA2954 /* WeekTrend.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeekTrend.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D466A25A2C170C8700AA2954 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D466A25C2C170C8700AA2954 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -132,6 +134,7 @@
 			isa = PBXGroup;
 			children = (
 				D466A2882C175ACD00AA2954 /* DetailViewController.swift */,
+				D41AC4592C3381C5002A0D34 /* VideoTableViewCell.swift */,
 				D466A28C2C175F9700AA2954 /* DetailTableViewCell.swift */,
 				D4F8D5802C2AA61700638548 /* PosterCollectionViewCell.swift */,
 			);
@@ -245,6 +248,7 @@
 				D466A27F2C170E5000AA2954 /* Basic+Ex.swift in Sources */,
 				D466A27A2C170D7200AA2954 /* APIKey.swift in Sources */,
 				D466A25D2C170C8700AA2954 /* SceneDelegate.swift in Sources */,
+				D41AC45A2C3381C5002A0D34 /* VideoTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

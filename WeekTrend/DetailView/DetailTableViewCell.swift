@@ -7,17 +7,12 @@
 
 import UIKit
 import SnapKit
-//import WebKit
-//
-//class WebViewCell: BaseTableViewCell {
-//    
-//}
 
-class DetailTableViewCell: BaseTableViewCell {
+final class DetailTableViewCell: BaseTableViewCell {
     
     let titleLabel = {
         let view = UILabel()
-        view.font = .boldSystemFont(ofSize: 20)
+        view.font = .boldSystemFont(ofSize: 17)
         view.text = "비슷한 영화"
         return view
     }()
